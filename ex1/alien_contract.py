@@ -10,7 +10,7 @@ class ContactType(Enum):
     radio = "radio"
     visual = "visual"
     physical = "physical"
-    telepathic = "telephatic"
+    telepathic = "telepathic"
 
 
 class AlienContact(BaseModel):
@@ -74,14 +74,17 @@ def main() -> None:
 
     try:
         AlienContact(
-            contact_id="CC_2024_001",
-            timestamp=datetime.now(),
-            contact_type=ContactType.physical,
-            location="Area 51, Nevada",
-            signal_strength=0.85,
-            duration_minutes=45,
-            witness_count=2,
-            message_received="Greetings from Zeta Reticuli",
+          **{
+            "contact_id": "AC_2024_002",
+            "timestamp": "2024-01-16T09:15:00",
+            "location": "Roswell",
+            "contact_type": "telepathic",
+            "signal_strength": 6.2,
+            "duration_minutes": 30,
+            "witness_count": 1,
+            "message_received": None,
+            "is_verified": False
+          }
         )
     except ValidationError as e:
         print("Expected validation error:")

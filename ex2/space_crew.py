@@ -19,7 +19,7 @@ class CrewMember(BaseModel):
     name: str = Field(min_length=2, max_length=50)
     rank: Rank
     age: int = Field(ge=18, le=80)
-    specalization: str = Field(min_length=3, max_length=30)
+    specialization: str = Field(min_length=3, max_length=30)
     years_experience: int = Field(ge=0, le=50)
     is_active: bool = Field(default=True)
 
@@ -31,7 +31,7 @@ class SpaceMission(BaseModel):
     launch_date: datetime
     duration_days: int = Field(ge=1, le=3650)
     crew: List[CrewMember] = Field(min_length=1, max_length=12)
-    misssion_status: str = Field(default="planned")
+    mission_status: str = Field(default="planned")
     budget_millions: float = Field(ge=1.0, le=10000.0)
 
     @model_validator(mode="after")
@@ -41,7 +41,7 @@ class SpaceMission(BaseModel):
         if not self.mission_id.startswith("M"):
             errors.append("Incorrect mission id")
         ranks = [member.rank for member in self.crew]
-        if not Rank.captain not in ranks or Rank.commander not in ranks:
+        if Rank.captain not in ranks and Rank.commander not in ranks:
             errors.append("Mission must have a commander or a captain")
         experienced = [
             member for member in self.crew
@@ -76,7 +76,7 @@ def main() -> None:
                 name="Sarah Conor",
                 rank=Rank.commander,
                 age=50,
-                specalization="Mission Command",
+                specialization="Mission Command",
                 years_experience=20,
             ),
             CrewMember(
@@ -84,7 +84,7 @@ def main() -> None:
                 name="John Smith",
                 rank=Rank.lieutenant,
                 age=40,
-                specalization="Navigation",
+                specialization="Navigation",
                 years_experience=15,
             ),
             CrewMember(
@@ -92,11 +92,12 @@ def main() -> None:
                 name="Alice Johnson",
                 rank=Rank.officer,
                 age=32,
-                specalization="Engineering",
+                specialization="Engineering",
                 years_experience=20,
             ),
         ],
     )
+
     print("Valid mission created:")
     print(f"Mission: {mission.mission_name}")
     print(f"ID: {mission.mission_id}")
@@ -106,45 +107,51 @@ def main() -> None:
     print(f"Crew size: {len(mission.crew)}")
     print("Crew members:")
     for member in mission.crew:
-        print(f"- {member.name} ({member.rank.value})- {member.specalization}")
+        print(f"- {member.name}({member.rank.value})- {member.specialization}")
 
     print()
     print("=" * 30)
 
     try:
         SpaceMission(
-            mission_id="M2024",
-            mission_name="Mars Colony Establishment",
-            destination="Mars",
-            duration_days=900,
-            budget_millions=2500,
-            launch_date=datetime.now(),
-            crew=[
-                CrewMember(
-                    member_id="sco",
-                    name="Sarah Conor",
-                    rank=Rank.lieutenant,
-                    age=50,
-                    specalization="Mission Command",
-                    years_experience=2,
-                ),
-                CrewMember(
-                    member_id="sco",
-                    name="John Smith",
-                    rank=Rank.lieutenant,
-                    age=40,
-                    specalization="Navigation",
-                    years_experience=3,
-                ),
-                CrewMember(
-                    member_id="ajo",
-                    name="Alice Johnson",
-                    rank=Rank.officer,
-                    age=32,
-                    specalization="Engineering",
-                    years_experience=20,
-                ),
-            ],
+            **{
+                'mission_id': 'M2024_TITAN',
+                'mission_name': 'Solar Observatory Research Mission',
+                'destination': 'Solar Observatory',
+                'launch_date': '2024-03-30T00:00:00',
+                'duration_days': 451,
+                'crew': [
+                    {
+                        'member_id': 'CM001',
+                        'name': 'Sarah Williams',
+                        'rank': 'captain',
+                        'age': 43,
+                        'specialization': 'Mission Command',
+                        'years_experience': 19,
+                        'is_active': True
+                    },
+                    {
+                        'member_id': 'CM004',
+                        'name': 'David Smith',
+                        'rank': 'commander',
+                        'age': 27,
+                        'specialization': 'Security',
+                        'years_experience': 1,
+                        'is_active': True
+                    },
+                    {
+                        'member_id': 'CM005',
+                        'name': 'Maria Jones',
+                        'rank': 'cadet',
+                        'age': 55,
+                        'specialization': 'Research',
+                        'years_experience': 3,
+                        'is_active': True
+                    }
+                ],
+                'mission_status': 'planned',
+                'budget_millions': 2208.1
+            }
         )
     except ValidationError as e:
         print("Expected validation error:")
