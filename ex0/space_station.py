@@ -13,7 +13,7 @@ class SpaceStation(BaseModel):
     oxygen_level: float = Field(ge=0.0, le=100.0)
     last_maintenance: datetime
     is_operational: bool = Field(default=True)
-    notes: Optional[str] = Field(default=None, le=200)
+    notes: Optional[str] = Field(default=None, max_length=200)
 
 
 def main() -> None:

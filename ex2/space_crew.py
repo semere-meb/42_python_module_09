@@ -47,7 +47,7 @@ class SpaceMission(BaseModel):
             member for member in self.crew
             if member.years_experience >= 5
         ]
-        if self.duration_days > 365 and len(experienced) < len(self.crew):
+        if self.duration_days > 365 and len(experienced) < len(self.crew)/2:
             errors.append("Inexperienced crew for this mission")
         if not all(member.is_active for member in self.crew):
             errors.append("Mission must not have inactive crew members")
